@@ -4,9 +4,9 @@ export const Message = {
     email_placeholder : "Enter Email",
     password_placeholder : "Enter Password",
 
-    invalid_name : "Invalid Name",
+    invalid_name : "Valid length: 5",
     invalid_email : "Invalid Email",
-    invalid_pwd : "Invalid Password",
+    invalid_pwd : "Password should be between 5-10 letters",
 
     btn_submit : "Submit",
 
@@ -20,7 +20,7 @@ export const Message = {
 
 
     //screens
-    screen_intro: 'Intro',
+    screen_home: 'Home',
 
 };
 

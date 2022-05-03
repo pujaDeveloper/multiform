@@ -31,6 +31,9 @@ let intro = {
     borderBottomColor: color.BLACK,
     borderBottomWidth: 2,
   },
+  rowTitle:{
+    color: color.BLACK, fontSize: convertFontScale(15), marginLeft: convertFontScale(12) 
+  },
   textInputContainer: {
     width: '80%',
     height: convertFontScale(42),

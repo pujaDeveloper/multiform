@@ -12,7 +12,7 @@ import { convertFontScale, screenHeight } from '../../utils/theme';
 import styles from './styles';
 const EMAIL_REG = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w\w+)+$/;
 
-export class Intro extends Component {
+export class Home extends Component {
 
 
     constructor(props) {
@@ -66,7 +66,7 @@ export class Intro extends Component {
         return (
             <View style={styles.rowContainer}>
 
-                <Text style={{ color: color.BLACK, fontSize: convertFontScale(14), marginLeft: convertFontScale(12) }}>Employee Form No. {(index + 1)}</Text>
+                <Text style={styles.rowTitle}>Employee Form No. {(index + 1)}</Text>
 
                 <View style={[styles.textInputContainer, styles.textInputMargin]}>
                     <TextInput editable={!item.isSubmitted}
@@ -97,17 +97,17 @@ export class Intro extends Component {
 
 
                 <View style={[styles.textInputContainer, styles.textInputMargin]}>
-                    <View style={{ width: '100%', display: 'flex', flexDirection: 'row' }}>
+                    <View style={{ width: '100%', display: 'flex', flexDirection: 'row', alignItems: 'center' }}>
                         <TextInput editable={!item.isSubmitted}
                             style={[styles.textInput, { width: '80%' }]}
-                            secureTextEntry={item.pwd.isVisible}
+                            secureTextEntry={!item.pwd.isVisible}
                             placeholder={Message.password_placeholder}
                             returnKeyType={"done"}
                             onChangeText={(text) => this.onPasswordChange(text)}
                             value={item.pwd.value}
                             textContentType='newPassword'
                         />
-                        <TouchableOpacity onPress={async () => this.onPwdVisiable()} style={{}}>
+                        <TouchableOpacity onPress={async () => this.onPwdVisiable(index)} style={{}}>
                             <Image style={{ width: 30, height: 30 }} source={item.pwd.isVisible ? require('../../assets/Images/view.png') : require('../../assets/Images/hidden.png')} />
                         </TouchableOpacity>
                     </View>
@@ -129,7 +129,7 @@ export class Intro extends Component {
                     <View style={[styles.subContainer]}>
                         <FlatList
                             data={forms}
-                            keyExtractor={item => `${item.a}`}
+                            keyExtractor={item => `${item.id}`}
                             renderItem={this.renderItem}
                         />
 
@@ -153,6 +153,7 @@ export class Intro extends Component {
         }
 
         let newForm = {
+            id: t.length,
             name: {
                 value: "",
                 error: "",
@@ -180,8 +181,7 @@ export class Intro extends Component {
 
     onNameChange(text) {
         text = text.toString().trim()
-        text = text.replaceAll(' ', '')
-
+        text = text.split(" ").join("")
         let name_obj = {
             value: text,
             error: "",
@@ -202,7 +202,6 @@ export class Intro extends Component {
     }
 
     onEmailChange(text) {
-        console.log("email", text)
         text = text.toString().trim()
         let email_obj = {
             value: text,
@@ -226,7 +225,7 @@ export class Intro extends Component {
 
     onPasswordChange(text) {
         text = text.toString().trim()
-        text = text.replaceAll(' ', '')
+        text = text.split(" ").join("")
         let pwd_obj = {
             value: text,
             error: "",
@@ -236,7 +235,7 @@ export class Intro extends Component {
             pwd_obj['error'] = Message.blank_pwd
             pwd_obj['isError'] = true
         }
-        else if (text.length != 5) {
+        else if (text.length < 5 || text.length > 10) {
             pwd_obj['error'] = Message.invalid_pwd
             pwd_obj['isError'] = true
         }
@@ -247,23 +246,23 @@ export class Intro extends Component {
         this.updateValues(Message.KEY_PASSWORD, pwd_obj)
     }
 
-    onPwdVisiable() {
+    onPwdVisiable(index) {
+        console.log(index, "pwd index");
         let t = this.state.forms
-        let obj = t[t.length - 1][Message.KEY_PASSWORD]
+        let obj = t[index][Message.KEY_PASSWORD]
         obj['isVisible'] = !obj.isVisible
-
-        this.updateValues(Message.KEY_PASSWORD, obj)
+        this.updateValues(Message.KEY_PASSWORD, obj, index)
     }
 
-    updateValues(key, obj) {
+    updateValues(key, obj, index) {
         let t = this.state.forms
-        t[t.length - 1][key] = obj
+        let i = index != undefined ? index : (t.length - 1) 
+        t[i][key] = obj
 
         this.setState({ forms: t })
     }
 
     onSubmitClick(index) {
-
         //check name , email or pasword has error or not 
         // set true or false
         let t = this.state.forms
